@@ -16,9 +16,11 @@ following information:
 
 1. [Introduction and Table of Contents (this file)][1]
 2. [Runtime and execution order][2]
-3. [How does this thing know who I am? (or how the software tracks users)][3]
+3. [How does this thing know who I am? (or how the database is constructed)][3]
 4. [A newb's guide to NMAP][4]
 5. [How to I extend this into my own system?][5]
 
 
 [1]: ../docs/Intro.md
+[2]: ../docs/Runtime.md
+[3]: ../docs/Database.md
