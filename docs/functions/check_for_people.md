@@ -33,6 +33,6 @@ It operates in the following order:
 2. quiet
    The verbosity flag obtained via `argparse`.
 
-[1]: https://docs.python.org/3/library/pickle.html 
+[1]: ../docs/Database.md
 [2]: ../docs/functions/grep_output.md
 [3]: ../docs/functions/load_db.md
