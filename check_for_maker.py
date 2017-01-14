@@ -4,7 +4,6 @@ from os import system
 import pickle
 import time
 import sys
-import signal
 import argparse
 from tempfile import NamedTemporaryFile
 
@@ -49,7 +48,7 @@ def say_hello(output='Tee is home!'):
     return subprocess.Popen(['say', output]).wait()
 
 
-def reset(*args):
+def reset(db):
     db = load_db()
     for person in db:
         person['is_home'] = False
@@ -57,10 +56,6 @@ def reset(*args):
 
     ERR_FILE.truncate(0)
     OUT_FILE.truncate(0)
-
-    if not sys.argv.count('-q'):
-        print('Exiting!')
-    sys.exit(0)
 
 
 def check_for_people(db, quiet):
@@ -70,7 +65,7 @@ def check_for_people(db, quiet):
             print('Grepping output for %s using the search term %s.'
                   % (person['name'], person['ident']))
 
-        with open('outlog.txt') as f:
+        with open(OUT_FILE.name) as f:
             if grep_output(person['ident'], f):
 
                 if not person['is_connected']:
@@ -125,8 +120,6 @@ def run(quiet, iprange):
             system('clear')
 
 
-signal.signal(signal.SIGINT, reset)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-q', '--quiet', help='Do not output to STDOUT',
@@ -135,6 +128,12 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--iprange', help='The IP range to attempt to '
                         'scan.', type=str)
 
+    parser.add_argument('-R', '--reset', help='Reset the on line status of the'
+                        ' users in the database', action='store_true')
+
     parsed = parser.parse_args()
+
+    if parsed.reset:
+        reset(load_db())
 
     run(quiet=parsed.quiet, iprange=parsed.iprange)
