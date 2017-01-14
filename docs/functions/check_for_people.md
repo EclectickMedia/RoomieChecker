@@ -4,6 +4,7 @@ The function parses through the database object (described in detail [here][1])
 and checks to see if each user's unique network identifier was visible to NMAP.
 
 It operates in the following order:
+
 1. Get a person from the database
    - Each person is represented by one of the embedded dicts detailed [here][1]
 2. Obtain a readable file stream from `OUT_FILE`.
