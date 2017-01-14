@@ -27,6 +27,7 @@ The database is constructed as follows:
 
 The actual user data is contained within `dict` objects with the following
 fields:
+
 1. A `name` field
    - The user's actual name.
 2. A unique identifier field called `ident`
