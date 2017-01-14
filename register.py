@@ -2,15 +2,16 @@ import pickle
 import os
 import argparse
 
-default_db = {
-    'default': {
+default_db = [
+    {
+        'name': 'default user',
         'is_connected': False,
         'ident': 'defalut',
     }
-}
+]
 
 
-def generate_db(db):
+def save_db(db):
     with open('db.pkl', 'wb') as f:
         pickle.dump(db, f)
 
@@ -21,19 +22,20 @@ def load_db():
             return pickle.load(f)
     else:
         print('NO DATABASE AVAILABLE, GENERATING A DEFAULT DB')
-        generate_db(default_db)
+        save_db(default_db)
         return load_db()
 
 
 def register_user(db, name, ident):
     print('Registering %s with identifier of \'%s\'.' % (name, ident))
-    db[name] = {
+    db.append({
+        'name': name,
         'ident': ident,
         'is_connected': False
-    }
+    })
 
     print('Saving DB')
-    generate_db(db)
+    save_db(db)
 
 
 if __name__ == '__main__':
