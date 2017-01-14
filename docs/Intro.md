@@ -14,7 +14,7 @@ following information:
 
 ## Table of Contents:
 
-1. [Introduction][1]
+1. [Introduction and Table of Contents (this file)][1]
 2. [Runtime and execution order][2]
 3. [How does this thing know who I am? (or how the software tracks users)][3]
 4. [A newb's guide to NMAP][4]
