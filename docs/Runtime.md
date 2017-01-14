@@ -8,6 +8,7 @@ The software is run by executing `$ python check_for_users.py`.
 
 Upon module load, the script imports all necessary softwares, and declares the
 following global variables:
+
 1. ERR_FILE (a `NamedTemporaryFile` object to store errors from the NMAP call.)
 2. OUT_FILE (a `NamedTemporaryFile` object to store the output of the NMAP
    call.)
@@ -40,6 +41,7 @@ The software maintains a loop under the function `run` that executes all of the
 main logic.
 
 The loop runs the following order of operations:
+
 1. Initialize a `start_time` via python's `time.time()`,
 2. Enter an infinite while loop (`while 1:`),
 3. Ensure that `OUT_FILE` has no data in it via `OUT_FILE.truncate`,
