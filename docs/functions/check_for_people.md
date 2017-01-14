@@ -34,5 +34,5 @@ It operates in the following order:
    The verbosity flag obtained via `argparse`.
 
 [1]: ../../docs/Database.md
-[2]: ../docs/functions/grep_output.md
-[3]: ../docs/functions/load_db.md
+[2]: ../../docs/functions/grep_output.md
+[3]: ../../docs/functions/load_db.md
