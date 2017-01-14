@@ -14,7 +14,7 @@ The database is constructed as follows:
 [
     {
         'name': 'User\'s Name',
-        'ident': 'User's unique network identifier',
+        'ident': 'User\'s unique network identifier',
         'is_connected': False  # True if the user is connected to the network.
     },
     {
