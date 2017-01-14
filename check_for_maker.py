@@ -6,9 +6,10 @@ import time
 import sys
 import signal
 import argparse
+from tempfile import NamedTemporaryFile
 
-ERR_FILE = open('errorlog.txt', 'a+')
-OUT_FILE = open('outlog.txt', 'a+')
+ERR_FILE = NamedTemporaryFile('a+')
+OUT_FILE = NamedTemporaryFile('a+')
 DB_PATH = 'db.pkl'
 
 
