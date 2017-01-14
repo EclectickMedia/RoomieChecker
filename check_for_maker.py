@@ -13,6 +13,12 @@ DB_PATH = 'db.pkl'
 
 
 def load_db(path='db.pkl'):
+    """ Loads a dict object containing the following fields:
+
+        name - The name of the maker
+        ident - The unique network identifier.
+        is_connected - True if user is on the wifi, false otherwise.
+    """
     with open(path, 'rb') as f:
         return pickle.load(f)
 
@@ -66,17 +72,17 @@ def check_for_people(db, quiet):
         with open('outlog.txt') as f:
             if grep_output(person['ident'], f):
 
-                if not person['is_home']:
+                if not person['is_connected']:
                     if not quiet:
                         print('%s connected to the WiFi!'
                               % person['name'])
-                    person['is_home'] = True
+                    person['is_connected'] = True
                     say_hello('%s connected to the WiFi!'
                               % person['name'])
 
             else:
 
-                if person['is_home']:
+                if person['is_connected']:
 
                     if not quiet:
                         print('%s disconnected from the WiFi!'
@@ -84,7 +90,7 @@ def check_for_people(db, quiet):
                     say_hello('%s disconnected from the WiFi!'
                               % person['name'])
 
-                person['is_home'] = False
+                person['is_connected'] = False
 
 
 def run(quiet, iprange):
