@@ -23,8 +23,18 @@ It has more features than is entirely necessary, but we only use a few of them:
 > bypasses most router's internal packet blocking.
 
 2. IP range specifications 
+
 > specifying a range of IP's *(i.e 192.16.1.0/24 instead of just 192.16.1.0,
 > 192.16.1.1, 192.16.1.2 and so on)*
 
 
+Our usage of the command (`nmap -sP 192.16.1.0/24`) simply instructs the
+software to skip checking for open ports, and use ping scanning (`-sP`) on the
+range `192.16.1.0/24` where `0/24` resolves to `.0 to .255 (the maximum address
+in local networks)`.
+
+For more information on Nmap, try `$ man nmap` or read the [Nmap docs][nmap].
+
+
 [wikepdia]: https://en.wikipedia.org/wiki/Nmap
+[nmap]: https://nmap.org/docs.html
