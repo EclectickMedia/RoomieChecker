@@ -57,9 +57,9 @@ The loop runs the following order of operations:
    `system('clear')`
 10. Start the loop again.
 
-[1]: ../check_for_users.py
+[1]: ../../check_for_users.py
 [2]: https://docs.python.org/3/library/argparse.html
-[3]: ../docs/functions/load_db.md
-[4]: ../docs/functions/generate_nmap.md
-[5]: ../docs/functions/check_for_people.md
-[6]: ../docs/functions/dump_db.md
+[3]: ../docs/developers/functions/load_db.md
+[4]: ../docs/developers/functions/generate_nmap.md
+[5]: ../docs/developers/functions/check_for_people.md
+[6]: ../docs/developers/functions/dump_db.md

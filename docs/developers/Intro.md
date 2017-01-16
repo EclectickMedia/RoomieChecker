@@ -21,6 +21,7 @@ following information:
 5. [How to I extend this into my own system?][5]
 
 
-[1]: ../docs/Intro.md
-[2]: ../docs/Runtime.md
-[3]: ../docs/Database.md
+[1]: ../docs/developers/Intro.md
+[2]: ../docs/developers/Runtime.md
+[3]: ../docs/developers/Database.md
+[4]: ../docs/developers/NMAP_guide.md

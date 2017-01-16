@@ -33,6 +33,6 @@ It operates in the following order:
 2. quiet
    The verbosity flag obtained via `argparse`.
 
-[1]: ../../docs/Database.md
-[2]: ../../docs/functions/grep_output.md
-[3]: ../../docs/functions/load_db.md
+[1]: ../../developers/Database.md
+[2]: ../../docs/developers/functions/grep_output.md
+[3]: ../../docs/developers/functions/load_db.md
