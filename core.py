@@ -26,6 +26,16 @@ class Loader:
             pickle.dump(db, f)
 
 
+def reset(db):
+    db = Loader().load()
+    for person in db:
+        person.is_connected = False
+    Loader().dump(db)
+
+    ERR_FILE.truncate(0)
+    OUT_FILE.truncate(0)
+
+
 def generate_nmap(output_file, ip_range='192.168.1.0/24'):
     return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
                             stderr=ERR_FILE)
@@ -44,16 +54,6 @@ def grep_output(term, output_file):
 
 def announce(output='Tee is home!'):
     return subprocess.Popen(['say', output]).wait()
-
-
-def reset(db):
-    db = Loader().load()
-    for person in db:
-        person.is_connected = False
-    Loader().dump(db)
-
-    ERR_FILE.truncate(0)
-    OUT_FILE.truncate(0)
 
 
 def check_for_people(db, quiet):
