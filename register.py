@@ -6,6 +6,7 @@ default_db = [
     {
         'name': 'default user',
         'is_connected': False,
+        'last_detected': 0.0,
         'ident': 'defalut',
     }
 ]
@@ -31,7 +32,8 @@ def register_user(db, name, ident):
     db.append({
         'name': name,
         'ident': ident,
-        'is_connected': False
+        'is_connected': False,
+        'last_detected': 0.0
     })
 
     print('Saving DB')

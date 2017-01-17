@@ -73,8 +73,8 @@ def check_for_people(db, quiet):
                         print('%s connected to the WiFi!'
                               % person['name'])
                     person['is_connected'] = True
-                    say_hello('%s connected to the WiFi!'
-                              % person['name'])
+                    person['last_detected'] = time.time()
+                    yield person
 
             else:
 
