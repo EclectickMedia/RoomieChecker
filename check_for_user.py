@@ -44,7 +44,7 @@ def grep_output(term, output_file):
         return False
 
 
-def say_hello(output='Tee is home!'):
+def announce(output='Tee is home!'):
     return subprocess.Popen(['say', output]).wait()
 
 
@@ -73,7 +73,7 @@ def check_for_people(db, quiet):
                         print('%s connected to the WiFi!'
                               % person['name'])
                     person['is_connected'] = True
-                    person['last_detected'] = time.time()
+                    person['last_connected'] = time.time()
                     yield person
 
             else:
@@ -83,8 +83,8 @@ def check_for_people(db, quiet):
                     if not quiet:
                         print('%s disconnected from the WiFi!'
                               % person['name'])
-                    say_hello('%s disconnected from the WiFi!'
-                              % person['name'])
+                        person['last_connected'] = time.time()
+                        yield person
 
                 person['is_connected'] = False
 
@@ -107,7 +107,8 @@ def run(quiet, iprange):
         else:
             generate_nmap(OUT_FILE, ip_range=iprange).wait()
 
-        check_for_people(db, quiet)
+        for person in check_for_people(db, quiet):
+            announce(person)
 
         if (time.time() - start_time) > 1200:
             ERR_FILE.truncate(0)

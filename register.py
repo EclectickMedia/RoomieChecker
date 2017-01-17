@@ -6,7 +6,9 @@ default_db = [
     {
         'name': 'default user',
         'is_connected': False,
-        'last_detected': 0.0,
+        'conection_started': 0.0,
+        'last_connected': 0.0,
+        'announced': False,
         'ident': 'defalut',
     }
 ]
@@ -33,7 +35,8 @@ def register_user(db, name, ident):
         'name': name,
         'ident': ident,
         'is_connected': False,
-        'last_detected': 0.0
+        'last_connected': 0.0,
+        'announced': False
     })
 
     print('Saving DB')
@@ -41,7 +44,9 @@ def register_user(db, name, ident):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser("""
+    This script registers new users to the database object. See
+    docs/developers/Database.md for object details. """)
 
     parser.add_argument('name', help='The name of the maker')
     parser.add_argument('ident', help='The maker\'s network identifier')
