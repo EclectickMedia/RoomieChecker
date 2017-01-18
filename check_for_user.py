@@ -46,7 +46,7 @@ def grep_output(term, output_file):
 
 def announce(person):
     return subprocess.Popen(['say', '%s connected to the '
-                                    'wifi' % person.name]).wait()
+                                    'wifi' % person['name']]).wait()
 
 
 def reset(db):
