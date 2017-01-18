@@ -49,7 +49,7 @@ def announce(person):
                                     'wifi' % person['name']]).wait()
 
 
-def reset(db):
+def reset():
     db = load_db()
     for person in db:
         person['is_home'] = False
@@ -136,6 +136,6 @@ if __name__ == '__main__':
     parsed = parser.parse_args()
 
     if parsed.reset:
-        reset(load_db())
+        reset()
 
     run(quiet=parsed.quiet, iprange=parsed.iprange)
