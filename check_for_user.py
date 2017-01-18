@@ -1,10 +1,10 @@
 #! /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
-import subprocess
-from os import system
-import pickle
-import time
-import sys
 import argparse
+import pickle
+import subprocess
+import sys
+import time
+from os import system
 from tempfile import NamedTemporaryFile
 
 ERR_FILE = NamedTemporaryFile('a+')
@@ -44,8 +44,9 @@ def grep_output(term, output_file):
         return False
 
 
-def announce(output='Tee is home!'):
-    return subprocess.Popen(['say', output]).wait()
+def announce(person):
+    return subprocess.Popen(['say', '%s connected to the '
+                                    'wifi' % person.name]).wait()
 
 
 def reset(db):
