@@ -45,6 +45,7 @@ def grep_output(term, output_file):
 
 
 def announce(person):
+    # TODO Make this function os non reliant
     return subprocess.Popen(['say', '%s connected to the '
                                     'wifi' % person['name']]).wait()
 
