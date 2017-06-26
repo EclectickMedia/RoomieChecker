@@ -8,16 +8,10 @@ class Database:
             yield person
 
     def remove_person(self, name):
-        to_remove = []
-
         try:
             for person in self.yield_people():
                 if person.name.count(name):
-                    to_remove.append(person)
-
-            for person in to_remove:
-                self.people.remove(person)
-
+                    self.people.remove(person)
             return True
         except:
             return False
