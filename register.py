@@ -1,46 +1,19 @@
-import pickle
-import os
 import argparse
 
-default_db = [
-    {
-        'name': 'default user',
-        'is_connected': False,
-        'conection_started': 0.0,
-        'last_connected': 0.0,
-        'announced': False,
-        'ident': 'defalut',
-    }
-]
+import core
+import data
 
-
-def save_db(db):
-    with open('db.pkl', 'wb') as f:
-        pickle.dump(db, f)
-
-
-def load_db():
-    if os.access('db.pkl', os.F_OK):
-        with open('db.pkl', 'rb') as f:
-            return pickle.load(f)
-    else:
-        print('NO DATABASE AVAILABLE, GENERATING A DEFAULT DB')
-        save_db(default_db)
-        return load_db()
-
+l = core.Loader()
 
 def register_user(db, name, ident):
-    print('Registering %s with identifier of \'%s\'.' % (name, ident))
-    db.append({
-        'name': name,
-        'ident': ident,
-        'is_connected': False,
-        'last_connected': 0.0,
-        'announced': False
-    })
-
+    if db is not None:
+        print('Registering user')
+        db.add_person(data.Person(name, ident))
+    else:
+        print('Registering user and creating db.pkl')
+        db = data.Database().add_person(data.Person(name, ident))
     print('Saving DB')
-    save_db(db)
+    l.dump(db)
 
 
 if __name__ == '__main__':
@@ -53,4 +26,4 @@ if __name__ == '__main__':
 
     parsed = parser.parse_args()
 
-    register_user(load_db(), parsed.name, parsed.ident)
+    register_user(l.load(), parsed.name, parsed.ident)
