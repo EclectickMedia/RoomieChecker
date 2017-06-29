@@ -1,9 +1,11 @@
 import argparse
+import os
 
 import core
 import data
 
 l = core.Loader()
+
 
 def register_user(db, name, ident):
     if db is not None:
@@ -26,4 +28,7 @@ if __name__ == '__main__':
 
     parsed = parser.parse_args()
 
-    register_user(l.load(), parsed.name, parsed.ident)
+    if os.access(core.DB_PATH, os.F_OK):
+        register_user(l.load(), parsed.name, parsed.ident)
+    else:
+        register_user(data.Database(), parsed.name, parsed.ident)

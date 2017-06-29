@@ -1,13 +1,19 @@
 class Database:
+    """ Defines the behaviour of the database. """
     def add_person(self, person):
+        """ Adds a Person object to the internal people list. """
         self.people.append(person)
-        self.names.append(person.name)
 
     def yield_people(self):
+        """ Yields each Person object in the internal people list one at a
+        time. """
         for person in self.people:
             yield person
 
     def remove_person(self, name):
+        """ Checks each person in the internal people list for name and if
+        that person's name matches the name argument, remove it from the
+        internal people list. """
         try:
             for person in self.yield_people():
                 if person.name.count(name):
@@ -20,8 +26,7 @@ class Database:
         return 1
 
     def __init__(self):
-        self.people = []
-        self.names = []
+        self.people = []  # the internal people list
 
 
 class Person:

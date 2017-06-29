@@ -11,6 +11,7 @@ DB_PATH = 'db.pkl'
 
 
 class Loader:
+    """ The standard interface for loading db.pkl. """
     def load(self, path='db.pkl'):
         """ Loads a dict object containing the following fields:
 
@@ -22,11 +23,13 @@ class Loader:
             return pickle.load(f)
 
     def dump(self, db, path='db.pkl'):
+        """ Dumps db to path via Pickle. """
         with open(path, 'wb+') as f:
             pickle.dump(db, f)
 
 
 def reset(db):
+    """ Resets connection status to false for all users in the database. """
     db = Loader().load()
     for person in db:
         person.is_connected = False
@@ -37,11 +40,15 @@ def reset(db):
 
 
 def generate_nmap(output_file, ip_range='192.168.1.0/24'):
+    """ Returns a subprocess.Popen object calling an nmap process. """
     return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
                             stderr=ERR_FILE)
 
 
 def grep_output(term, output_file):
+    """ Parses a file for the appearance of term. This signifies that NMAP
+    found the user in its scan, and we can infer they have connected to the
+    network. """
     if not sys.argv.count('-q'):
         print('....Searching for %s' % term)
     for line in output_file:
@@ -53,10 +60,20 @@ def grep_output(term, output_file):
 
 
 def announce(output='Tee is home!'):
+    # TODO make OS non-dependent
+    # TODO Make announce simply execute a callback function
     return subprocess.Popen(['say', output]).wait()
 
 
 def check_for_people(db, quiet):
+    """ Checks OUT_FILE for the presence of each data.Person object's
+    identifier field to identify if they are connected to the network, then
+    yields each person.
+
+    It requires a database object provided by Loader.load, and a quiet flag
+    (for signalling verbosity).
+    """
+
     for person in db.yield_people():
 
         if not quiet:
