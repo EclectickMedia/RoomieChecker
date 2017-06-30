@@ -3,18 +3,20 @@ import os
 
 import core
 import data
+from log import logger
 
 l = core.Loader()
 
 
 def register_user(db, name, ident):
     if db is not None:
-        print('Registering user')
+        logger.info('Registering user')
         db.add_person(data.Person(name, ident))
     else:
-        print('Registering user and creating db.pkl')
+        logger.info('Registering user and creating db.pkl')
         db = data.Database().add_person(data.Person(name, ident))
-    print('Saving DB')
+
+    logger.info('Saving DB')
     l.dump(db)
 
 

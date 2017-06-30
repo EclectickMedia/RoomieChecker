@@ -5,6 +5,8 @@ import sys
 import time
 from tempfile import NamedTemporaryFile
 
+from log import logger
+
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
 DB_PATH = 'db.pkl'
@@ -50,7 +52,8 @@ def grep_output(term, output_file):
     found the user in its scan, and we can infer they have connected to the
     network. """
     if not sys.argv.count('-q'):
-        print('....Searching for %s' % term)
+        logger.info('....Searching for %s' % term)
+
     for line in output_file:
         if line.count(term):
             return True
@@ -77,8 +80,8 @@ def check_for_people(db, quiet):
     for person in db.yield_people():
 
         if not quiet:
-            print('Grepping output for %s using the search term %s.'
-                  % (person.name, person.ident))
+            logger.info('Grepping output for %s using the search term %s.'
+                        % (person.name, person.ident))
 
         with open(OUT_FILE.name) as f:
             if grep_output(person.ident, f):
@@ -86,8 +89,7 @@ def check_for_people(db, quiet):
                 if not person.is_connected:
 
                     if not quiet:
-                        print('%s connected to the WiFi!'
-                              % person.name)
+                        logger.info('%s connected to the WiFi!' % person.name)
 
                     person.is_connected = True
                     person.last_connected = time.time()
@@ -98,8 +100,8 @@ def check_for_people(db, quiet):
                 if person.is_connected:
 
                     if not quiet:
-                        print('%s disconnected from the WiFi!'
-                              % person.name)
+                        logger.info('%s disconnected from the WiFi!'
+                                    % person.name)
 
                     person.last_connected = time.time()
                     yield person
