@@ -5,6 +5,7 @@ import os
 
 import core
 from core import ERR_FILE, OUT_FILE
+from log import logger
 
 l = core.Loader()
 
@@ -32,15 +33,16 @@ while 1:
     OUT_FILE.truncate(0)
 
     if not parsed.quiet:
-        print('Refreshing DB')
+        logger.info('Refreshing DB')
 
     # Load a db
     db = l.load()
-
+    logger.debug('Loaded DB: %s' % str(db))
     if not parsed.quiet:
-        print('Running NMAP to find connected devices.')
+        logger.info('Running NMAP to find connected devices.')
 
     # Generate an NMAP object, and wait for it to finish its scan
+    logger.debug('Generate NMAP scan, wait')
     core.generate_nmap(OUT_FILE, parsed.iprange).wait()
 
     for person in core.check_for_people(db, parsed.quiet):
