@@ -11,6 +11,10 @@ l = core.Loader()
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--delay',
+                    help='The amount of time (in seconds) to delay between '
+                    'each NMAP scan. Defaults to 0 (instant)', default=0,
+                    type=int)
 parser.add_argument('-q', '--quiet', help='Do not output to STDOUT',
                     action='store_true')
 
@@ -57,3 +61,5 @@ while 1:
     if time.time() - start_time > 120 and not sys.argv.count('-q'):
         os.system('cls' if os.name == 'nt' else 'clear')
         start_time = time.time()
+
+    time.sleep(parsed.delay)
