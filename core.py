@@ -51,20 +51,23 @@ def grep_output(term, output_file):
     """ Parses a file for the appearance of term. This signifies that NMAP
     found the user in its scan, and we can infer they have connected to the
     network. """
-    if not sys.argv.count('-q'):
+    if not sys.argv.count('-q'):  # TODO Make this complient with argparse
         logger.info('....Searching for %s' % term)
 
     for line in output_file:
         if line.count(term):
+            logger.debug('%s present' % term)
             return True
 
     else:
+        logger.debug('%s not present' % term)
         return False
 
 
 def announce(output='Tee is home!'):
     # TODO make OS non-dependent
     # TODO Make announce simply execute a callback function
+    logger.debug('output=%s' % output)
     return subprocess.Popen(['say', output]).wait()
 
 
@@ -78,35 +81,54 @@ def check_for_people(db, quiet):
     """
 
     for person in db.yield_people():
+        logger.debug('check %s' % person.name)
 
         if not quiet:
             logger.info('Grepping output for %s using the search term %s.'
                         % (person.name, person.ident))
 
         with open(OUT_FILE.name) as f:
-            if grep_output(person.ident, f):
+            logger.debug('got OUT_FILE')
+
+            if grep_output(person.ident, f):  # If they are present in output
 
                 if not person.is_connected:
+                    logger.debug('%s connected')
+                    # If person is not connected, we can assume they have
+                    # connected for the first time.
 
                     if not quiet:
                         logger.info('%s connected to the WiFi!' % person.name)
 
                     person.is_connected = True
                     person.last_connected = time.time()
+                    logger.debug('%s: %s %s' % (person.name,
+                                                str(person.is_connected),
+                                                str(person.last_connected)))
                     yield person
+                else:
+                    logger.debug('%s present, already connected' % person.name)
+                    # We disregard their appearance if they are already
+                    # connected.
 
-            else:
+            else:  # If they are not present
 
                 if person.is_connected:
+                    # If person was previously connected, we can assume they
+                    # have disconnected form the network
+                    logger.debug('%s previously connected, not present'
+                                 % person.name)
 
                     if not quiet:
                         logger.info('%s disconnected from the WiFi!'
                                     % person.name)
 
-                    person.last_connected = time.time()
+                    person.last_connected = time.time()  # TODO is this correct?
                     yield person
 
-                person.is_connected = False
+                logger.debug('%s not present, ensure data' % person.name)
+                person.is_connected = False  # Ensure that person.is_connected
+                # is up to date. This is to ensure a clean runtime.
 
 
 if __name__ == '__main__':

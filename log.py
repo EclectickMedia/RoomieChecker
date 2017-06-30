@@ -34,7 +34,7 @@ tests_handler.setLevel(logging.DEBUG)
 
 debug_handler = handlers.RotatingFileHandler(DEBUG_LOG_PATH,
                                              maxBytes=500000, backupCount=5)
-debug_handler.setFormatter(stream_formatter)
+debug_handler.setFormatter(file_formatter)
 debug_handler.setLevel(logging.DEBUG)
 
 logger = logging.getLogger('base')

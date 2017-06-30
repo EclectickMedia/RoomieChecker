@@ -37,10 +37,12 @@ while 1:
 
     # Load a db
     db = l.load()
+    logger.debug('Loaded DB: %s' % str(db))
     if not parsed.quiet:
         logger.info('Running NMAP to find connected devices.')
 
     # Generate an NMAP object, and wait for it to finish its scan
+    logger.debug('Generate NMAP scan, wait')
     core.generate_nmap(OUT_FILE, parsed.iprange).wait()
 
     for person in core.check_for_people(db, parsed.quiet):
