@@ -37,7 +37,6 @@ while 1:
 
     # Load a db
     db = l.load()
-
     if not parsed.quiet:
         logger.info('Running NMAP to find connected devices.')
 
