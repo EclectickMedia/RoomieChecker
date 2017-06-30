@@ -1,7 +1,7 @@
 import argparse
 import sys
 import time
-from platform import system
+import os
 
 import core
 from core import ERR_FILE, OUT_FILE
@@ -52,5 +52,6 @@ while 1:
 
     l.dump(db)  # Dump db back to disk
 
-    if not sys.argv.count('-q'):
-        sys.stdout.truncate(0)
+    if time.time() - start_time > 120 and not sys.argv.count('-q'):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        start_time = time.time()
