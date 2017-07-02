@@ -7,6 +7,9 @@ from tempfile import NamedTemporaryFile
 
 from log import logger
 
+# CONSTANTS
+CONNECTION_CONFIRM = 1200  # 20 minutes in seconds
+DISCONNECTION_CONFIRM = 3600  # 1 hour in seconds
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
 DB_PATH = 'db.pkl'
@@ -68,7 +71,8 @@ def announce(output='Tee is home!'):
     # TODO make OS non-dependent
     # TODO Make announce simply execute a callback function
     logger.debug('output=%s' % output)
-    return subprocess.Popen(['say', output]).wait()
+    return None
+    # return subprocess.Popen(['say', output]).wait()
 
 
 def check_for_people(db, quiet):
@@ -78,6 +82,8 @@ def check_for_people(db, quiet):
 
     It requires a database object provided by Loader.load, and a quiet flag
     (for signalling verbosity).
+
+    - TODO Institute a 20 minute connect and 1 hour disconnect confirmation
     """
 
     for person in db.yield_people():
@@ -94,41 +100,53 @@ def check_for_people(db, quiet):
 
                 if not person.is_connected:
                     logger.debug('%s connected')
-                    # If person is not connected, we can assume they have
-                    # connected for the first time.
 
                     if not quiet:
                         logger.info('%s connected to the WiFi!' % person.name)
 
                     person.is_connected = True
                     person.last_connected = time.time()
+                    if person.connection_started is None:
+                        person.connection_started = time.time()
+
                     logger.debug('%s: %s %s' % (person.name,
                                                 str(person.is_connected),
-                                                str(person.last_connected)))
+                                                str(person.last_connected),
+                                                str(person.connection_started)))
                     yield person
                 else:
-                    logger.debug('%s present, already connected' % person.name)
                     # We disregard their appearance if they are already
-                    # connected.
+                    # connected, unless they have been connected long enough
+                    logger.debug('%s present, already connected' % person.name)
+                    if person.connection_started is not None:
+                        if time.time() - person.connection_started > \
+                                CONNECTION_CONFIRMATION:
+                        announce(person)  # TODO needs to track whats announced
+
+                    yield person
 
             else:  # If they are not present
 
-                if person.is_connected:
-                    # If person was previously connected, we can assume they
-                    # have disconnected form the network
-                    logger.debug('%s previously connected, not present'
-                                 % person.name)
+                # If person was previously connected, we can assume they
+                # have disconnected form the network
+                logger.debug('%s previously connected, not present'
+                                % person.name)
 
-                    if not quiet:
-                        logger.info('%s disconnected from the WiFi!'
-                                    % person.name)
-
-                    person.last_connected = time.time()  # TODO is this correct?
-                    yield person
+                if not quiet:
+                    logger.info('%s disconnected from the WiFi!'
+                                % person.name)
 
                 logger.debug('%s not present, ensure data' % person.name)
                 person.is_connected = False  # Ensure that person.is_connected
                 # is up to date. This is to ensure a clean runtime.
+
+                # How long ago were they connected?
+                if time.time() - person.last_connected > \
+                        DISCONNECTION_CONFIRMATION:
+                    announce()
+                    person.connection_started = None
+
+                yield person
 
 
 if __name__ == '__main__':

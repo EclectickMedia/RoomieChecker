@@ -31,8 +31,20 @@ class Database:
 
 class Person:
     is_connected = False
-    connection_started = 0.0
-    last_connected = 0.0
+
+    @property
+    def connection_started(self):
+        return self._connection_started
+
+    @connection_started.setter
+    def connection_started(self, time):
+        if time is None:
+            self._connection_started = None  # Null? SHould this be 0?
+
+        elif type(time) is not int:
+            raise TypeError('time must be int')
+
+    last_connected = 0.0  # TODO Do we need a null interface for this?
     announced = False
 
     def __init__(self, name, ident):
@@ -45,3 +57,5 @@ class Person:
         self.name = name
 
         self.ident = ident
+
+        self._connection_started = 0.0
