@@ -1,3 +1,7 @@
+import time
+from log import logger
+
+
 class Database:
     """ Defines the behaviour of the database. """
     def add_person(self, person):
@@ -30,7 +34,20 @@ class Database:
 
 
 class Person:
-    is_connected = False
+    @property
+    def is_connected(self):
+        return self._is_connected
+
+    @is_connected.setter
+    def is_connected(self, boolean):
+        logger.debug(boolean)
+        if boolean:
+            if self.connection_started == 0.0:
+                logger.debug('set self.connection_started = %s'
+                             % self.connection_started)
+                self.connection_started = time.time()
+
+        self._is_connected = boolean
 
     @property
     def connection_started(self):
@@ -38,11 +55,11 @@ class Person:
 
     @connection_started.setter
     def connection_started(self, time):
-        if time is None:
-            self._connection_started = None  # Null? SHould this be 0?
-
-        elif type(time) is not int:
+        logger.debug(time)
+        if type(time) is not float:
             raise TypeError('time must be int')
+
+        self._connection_started = time
 
     last_connected = 0.0  # TODO Do we need a null interface for this?
     announced = False
@@ -59,3 +76,5 @@ class Person:
         self.ident = ident
 
         self._connection_started = 0.0
+
+        self._is_connected = False

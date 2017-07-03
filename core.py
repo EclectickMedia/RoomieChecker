@@ -36,8 +36,10 @@ class Loader:
 def reset(db):
     """ Resets connection status to false for all users in the database. """
     db = Loader().load()
-    for person in db:
+    for person in db.yield_people():
         person.is_connected = False
+        person.last_connected = 0.0
+        person.connection_started = 0.0
     Loader().dump(db)
 
     ERR_FILE.truncate(0)
@@ -99,29 +101,27 @@ def check_for_people(db, quiet):
             if grep_output(person.ident, f):  # If they are present in output
 
                 if not person.is_connected:
-                    logger.debug('%s connected')
+                    logger.debug('%s connected' % person.name)
 
-                    if not quiet:
+                    if not quiet and person.connection_started == 0.0:
                         logger.info('%s connected to the WiFi!' % person.name)
 
-                    person.is_connected = True
+                    person.is_connected = True  # sets connection_started
                     person.last_connected = time.time()
-                    if person.connection_started is None:
-                        person.connection_started = time.time()
 
-                    logger.debug('%s: %s %s' % (person.name,
-                                                str(person.is_connected),
-                                                str(person.last_connected),
-                                                str(person.connection_started)))
+                    logger.debug('%s: %s %s %s'
+                                 % (person.name, str(person.is_connected),
+                                    str(person.last_connected),
+                                    str(person.connection_started)))
                     yield person
                 else:
                     # We disregard their appearance if they are already
                     # connected, unless they have been connected long enough
                     logger.debug('%s present, already connected' % person.name)
-                    if person.connection_started is not None:
+                    if person.connection_started != 0.0:
                         if time.time() - person.connection_started > \
-                                CONNECTION_CONFIRMATION:
-                        announce(person)  # TODO needs to track whats announced
+                                CONNECTION_CONFIRM:  # TODO doesnt wait for time
+                            announce(person)  # TODO needs to track
 
                     yield person
 
@@ -130,7 +130,7 @@ def check_for_people(db, quiet):
                 # If person was previously connected, we can assume they
                 # have disconnected form the network
                 logger.debug('%s previously connected, not present'
-                                % person.name)
+                             % person.name)
 
                 if not quiet:
                     logger.info('%s disconnected from the WiFi!'
@@ -141,10 +141,11 @@ def check_for_people(db, quiet):
                 # is up to date. This is to ensure a clean runtime.
 
                 # How long ago were they connected?
-                if time.time() - person.last_connected > \
-                        DISCONNECTION_CONFIRMATION:
-                    announce()
-                    person.connection_started = None
+                if person.connetion_started != 0.0:  # connection been active
+                    if time.time() - person.last_connected > \
+                            DISCONNECTION_CONFIRM:
+                        announce()
+                        person.connection_started = 0.0
 
                 yield person
 
