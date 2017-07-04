@@ -134,7 +134,7 @@ def check_for_people(db, quiet):
 
                 # If person was previously connected, we can assume they
                 # have disconnected form the network
-                logger.debug('%s previously connected, not present'
+                logger.debug('%s previously connected'
                              % person.name)
 
                 if not quiet:

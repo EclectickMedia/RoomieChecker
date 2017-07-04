@@ -32,6 +32,7 @@ if parsed.reset:
     exit()
 
 start_time = time.time()
+logger.debug("runtime start")
 while 1:
     # Clear OUT_FILE
     OUT_FILE.truncate(0)
