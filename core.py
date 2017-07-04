@@ -8,7 +8,8 @@ from tempfile import NamedTemporaryFile
 from log import logger
 
 # CONSTANTS
-CONNECTION_CONFIRM = 1200  # 20 minutes in seconds
+# TODO Set CONNECTION_CONFIRM back to 1200
+CONNECTION_CONFIRM = 200  # 20 minutes in seconds
 DISCONNECTION_CONFIRM = 3600  # 1 hour in seconds
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
@@ -70,7 +71,6 @@ def grep_output(term, output_file):
 
 
 def announce(output='Tee is home!'):
-    # TODO make OS non-dependent
     # TODO Make announce simply execute a callback function
     logger.debug('output=%s' % output)
     return None
@@ -119,9 +119,14 @@ def check_for_people(db, quiet):
                     # connected, unless they have been connected long enough
                     logger.debug('%s present, already connected' % person.name)
                     if person.connection_started != 0.0:
+                        logger.info('call announce')
+                        logger.debug("%s %s",
+                                     time.time() - person.connection_started,
+                                     CONNECTION_CONFIRM)
                         if time.time() - person.connection_started > \
                                 CONNECTION_CONFIRM:  # TODO doesnt wait for time
-                            announce(person)  # TODO needs to track
+                            if not person.announced:
+                                announce(person)  # TODO needs to track
 
                     yield person
 
@@ -141,10 +146,10 @@ def check_for_people(db, quiet):
                 # is up to date. This is to ensure a clean runtime.
 
                 # How long ago were they connected?
-                if person.connetion_started != 0.0:  # connection been active
+                if person.connection_started != 0.0:  # connection been active
                     if time.time() - person.last_connected > \
-                            DISCONNECTION_CONFIRM:
-                        announce()
+                            DISCONNECTION_CONFIRM:  # TODO doesnt wait for time
+                        announce(person)  # TODO needs to track announced status
                         person.connection_started = 0.0
 
                 yield person
