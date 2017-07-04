@@ -47,11 +47,11 @@ def generate_nmap(output_file, ip_range='192.168.1.0/24'):
                             stderr=ERR_FILE)
 
 
-def grep_output(term, output_file):
+def grep_output(term, output_file, quiet=False):
     """ Parses a file for the appearance of term. This signifies that NMAP
     found the user in its scan, and we can infer they have connected to the
     network. """
-    if not sys.argv.count('-q'):  # TODO Make this complient with argparse
+    if not quiet:
         logger.info('....Searching for %s' % term)
 
     for line in output_file:
@@ -90,7 +90,7 @@ def check_for_people(db, quiet):
         with open(OUT_FILE.name) as f:
             logger.debug('got OUT_FILE')
 
-            if grep_output(person.ident, f):  # If they are present in output
+            if grep_output(person.ident, f, quiet):  # If they are present in output
 
                 if not person.is_connected:
                     logger.debug('%s connected')
