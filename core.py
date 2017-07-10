@@ -122,12 +122,12 @@ def check_for_people(db, quiet):
                     logger.debug('%s present, already connected: %s'
                                  % (person.name, person.is_connected))
                     if person.connection_started != 0.0:
-                        logger.info('call announce')
                         logger.debug("connection confirmation: %s %s",
                                      time.time() - person.connection_started,
                                      CONNECTION_CONFIRM)
                         if time.time() - person.connection_started > \
                                 CONNECTION_CONFIRM:  # TODO doesnt wait for time
+                            logger.info('call announce')
                             if not person.announced:
                                 announce(person)  # TODO needs to track
 
