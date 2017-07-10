@@ -132,7 +132,6 @@ class UserChecker:
                                          CONNECTION_CONFIRM)
                             if time.time() - person.connection_started > \
                                     CONNECTION_CONFIRM and not person.announced:
-                                logger.info('call announce')
                                 self.announce(person)  # TODO needs to track
                                 person.announced = True
 
