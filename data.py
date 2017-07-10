@@ -78,3 +78,8 @@ class Person:
         self._connection_started = 0.0
 
         self._is_connected = False
+
+    def __iter__(self):
+        for attr in dir(self):
+            if not attr[0:1].count('_'):
+                yield (attr, getattr(self, attr))
