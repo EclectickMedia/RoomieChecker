@@ -32,6 +32,7 @@ if parsed.reset:
     exit()
 
 start_time = time.time()
+logger.debug("runtime start")
 while 1:
     # Clear OUT_FILE
     OUT_FILE.truncate(0)
@@ -50,7 +51,7 @@ while 1:
     core.generate_nmap(OUT_FILE, parsed.iprange).wait()
 
     for person in core.check_for_people(db, parsed.quiet):
-        core.announce(person.name)
+        pass
 
     if (time.time() - start_time) > 1200:  # TODO what is this doing here?
         ERR_FILE.truncate(0)
