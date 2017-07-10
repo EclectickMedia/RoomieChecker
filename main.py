@@ -50,7 +50,10 @@ while 1:
     logger.debug('Generate NMAP scan, wait')
     core.generate_nmap(OUT_FILE, parsed.iprange).wait()
 
-    for person in core.check_for_people(db, parsed.quiet):
+    def callback(person):
+        print('got %s' % person.name)
+
+    for person in core.UserChecker(db, callback, quiet=parsed.quiet):
         pass
 
     if (time.time() - start_time) > 1200:  # TODO what is this doing here?
