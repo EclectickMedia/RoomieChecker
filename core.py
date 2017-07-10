@@ -7,7 +7,7 @@ from tempfile import NamedTemporaryFile
 from log import logger
 
 # CONSTANTS
-CONNECTION_CONFIRM = 30  # 20 minutes in seconds
+CONNECTION_CONFIRM = 1200  # 20 minutes in seconds
 DISCONNECTION_CONFIRM = 3600  # 1 hour in seconds
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
