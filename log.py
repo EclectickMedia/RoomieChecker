@@ -37,10 +37,10 @@ debug_handler = handlers.RotatingFileHandler(DEBUG_LOG_PATH,
 debug_handler.setFormatter(file_formatter)
 debug_handler.setLevel(logging.DEBUG)
 
-logger = logging.getLogger('base')
+logger = logging.getLogger('UserChecker')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(debug_handler)
 logger.addHandler(stream_handler)
 
-test_logger = logging.getLogger('base.tests')
+test_logger = logging.getLogger('UserChecker.tests')
 test_logger.addHandler(tests_handler)
