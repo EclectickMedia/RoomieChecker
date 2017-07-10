@@ -1,15 +1,13 @@
 #! /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
 import pickle
 import subprocess
-import sys
 import time
 from tempfile import NamedTemporaryFile
 
 from log import logger
 
 # CONSTANTS
-# TODO Set CONNECTION_CONFIRM back to 1200
-CONNECTION_CONFIRM = 200  # 20 minutes in seconds
+CONNECTION_CONFIRM = 1200  # 20 minutes in seconds
 DISCONNECTION_CONFIRM = 3600  # 1 hour in seconds
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
@@ -41,6 +39,7 @@ def reset(db):
         person.is_connected = False
         person.last_connected = 0.0
         person.connection_started = 0.0
+        person.announced = False
     Loader().dump(db)
 
     ERR_FILE.truncate(0)
@@ -57,9 +56,6 @@ def grep_output(term, output_file):
     """ Parses a file for the appearance of term. This signifies that NMAP
     found the user in its scan, and we can infer they have connected to the
     network. """
-    if not sys.argv.count('-q'):  # TODO Make this complient with argparse
-        logger.info('....Searching for %s' % term)
-
     for line in output_file:
         logger.debug(str(line).strip('\n'))
         if line.count(term):
@@ -85,8 +81,6 @@ def check_for_people(db, quiet):
 
     It requires a database object provided by Loader.load, and a quiet flag
     (for signalling verbosity).
-
-    - TODO Institute a 20 minute connect and 1 hour disconnect confirmation
     """
 
     for person in db.yield_people():
@@ -103,7 +97,6 @@ def check_for_people(db, quiet):
             if grep_output(person.ident, f):  # If they are present in output
 
                 if not person.is_connected:
-                    logger.debug('%s connected' % person.name)
 
                     if not quiet and person.connection_started == 0.0:
                         logger.info('%s connected to the WiFi!' % person.name)
@@ -121,15 +114,22 @@ def check_for_people(db, quiet):
                     # connected, unless they have been connected long enough
                     logger.debug('%s present, already connected: %s'
                                  % (person.name, person.is_connected))
+
+                    person.last_connected = time.time()
                     if person.connection_started != 0.0:
                         logger.debug("connection confirmation: %s %s",
                                      time.time() - person.connection_started,
                                      CONNECTION_CONFIRM)
                         if time.time() - person.connection_started > \
-                                CONNECTION_CONFIRM:  # TODO doesnt wait for time
+                                CONNECTION_CONFIRM and not person.announced:
                             logger.info('call announce')
-                            if not person.announced:
-                                announce(person)  # TODO needs to track
+                            announce(person)  # TODO needs to track
+                            person.announced = True
+
+                    logger.debug('%s: %s %s %s'
+                                 % (person.name, str(person.is_connected),
+                                    str(person.last_connected),
+                                    str(person.connection_started)))
 
                     yield person
 
@@ -154,8 +154,9 @@ def check_for_people(db, quiet):
                                  time.time() - person.last_connected,
                                  DISCONNECTION_CONFIRM)
                     if time.time() - person.last_connected > \
-                            DISCONNECTION_CONFIRM:  # TODO doesnt wait for time
-                        announce(person)  # TODO needs to track announced status
+                            DISCONNECTION_CONFIRM and not person.announced:
+                        announce(person)  # TODO needs to track announced
+                        person.announced = True
                         person.connection_started = 0.0
 
                 yield person
