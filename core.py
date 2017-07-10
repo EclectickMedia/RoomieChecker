@@ -4,7 +4,10 @@ import subprocess
 import time
 from tempfile import NamedTemporaryFile
 
-from log import logger
+try:
+    from .log import logger
+except SystemError:
+    from log import logger
 
 # CONSTANTS
 CONNECTION_CONFIRM = 1200  # 20 minutes in seconds

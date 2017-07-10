@@ -1,5 +1,8 @@
 import time
-from log import logger
+try:
+    from .log import logger
+except SystemError:
+    from log import logger
 
 
 class Database:

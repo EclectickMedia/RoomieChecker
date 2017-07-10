@@ -4,8 +4,8 @@ import time
 import os
 
 import core
-from core import ERR_FILE, OUT_FILE
-from log import logger
+from .core import ERR_FILE, OUT_FILE
+from .log import logger
 
 l = core.Loader()
 

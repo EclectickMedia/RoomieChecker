@@ -1,9 +1,14 @@
 import argparse
 import os
 
-import core
-import data
-from log import logger
+try:
+    from . import core
+    from . import data
+    from .log import logger
+except SystemError:
+    import core
+    import data
+    from log import logger
 
 l = core.Loader()
 
