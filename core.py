@@ -61,6 +61,7 @@ def grep_output(term, output_file):
         logger.info('....Searching for %s' % term)
 
     for line in output_file:
+        logger.debug(str(line).strip('\n'))
         if line.count(term):
             logger.debug('%s present' % term)
             return True
@@ -90,6 +91,7 @@ def check_for_people(db, quiet):
 
     for person in db.yield_people():
         logger.debug('check %s' % person.name)
+        logger.debug(str(list(person)))
 
         if not quiet:
             logger.info('Grepping output for %s using the search term %s.'
@@ -117,10 +119,11 @@ def check_for_people(db, quiet):
                 else:
                     # We disregard their appearance if they are already
                     # connected, unless they have been connected long enough
-                    logger.debug('%s present, already connected' % person.name)
+                    logger.debug('%s present, already connected: %s'
+                                 % (person.name, person.is_connected))
                     if person.connection_started != 0.0:
                         logger.info('call announce')
-                        logger.debug("%s %s",
+                        logger.debug("connection confirmation: %s %s",
                                      time.time() - person.connection_started,
                                      CONNECTION_CONFIRM)
                         if time.time() - person.connection_started > \
@@ -134,8 +137,8 @@ def check_for_people(db, quiet):
 
                 # If person was previously connected, we can assume they
                 # have disconnected form the network
-                logger.debug('%s previously connected'
-                             % person.name)
+                logger.debug('%s previously connected: %s'
+                             % (person.name, person.is_connected))
 
                 if not quiet:
                     logger.info('%s disconnected from the WiFi!'
@@ -147,6 +150,9 @@ def check_for_people(db, quiet):
 
                 # How long ago were they connected?
                 if person.connection_started != 0.0:  # connection been active
+                    logger.debug('disconnection confirmation: %s %s',
+                                 time.time() - person.last_connected,
+                                 DISCONNECTION_CONFIRM)
                     if time.time() - person.last_connected > \
                             DISCONNECTION_CONFIRM:  # TODO doesnt wait for time
                         announce(person)  # TODO needs to track announced status
