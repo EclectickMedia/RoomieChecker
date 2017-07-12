@@ -37,8 +37,31 @@ class Database:
 
 
 class Person:
+    """ Handles all data for each Person in the database. Provides an easy
+    iterable interface to retrieve all data fields.
+
+    For example:
+        >>> from data import Person
+        >>> p = Person('Ariana', 'Arianas-Device')
+        >>> for field in p:
+        ...     print(field)
+        ('connection_announced', False)
+        ('connection_started', 0.0)
+        ('disconnection_announced', False)
+        ('ident', 'Arianas-Device')
+        ('is_connected', False)
+        ('last_connected', 0.0)
+        ('name', 'Ariana')
+    """
+    last_connected = 0.0  # TODO Do we need a null interface for this?
+
     @property
     def is_connected(self):
+        """ True if the user is currently connected.
+
+        If set to false, and self.connection_started is equal to 0.0, sets
+        self.connection_stated to time.time(). """
+
         return self._is_connected
 
     @is_connected.setter
@@ -54,18 +77,53 @@ class Person:
 
     @property
     def connection_started(self):
+        """ The time at which the user connected. A value of 0.0 can be
+        considered "never".
+
+        Can be set to 0.0 when the user has been confirmed to have disconnected.
+        """
+
         return self._connection_started
 
     @connection_started.setter
     def connection_started(self, time):
         logger.debug(time)
         if type(time) is not float:
-            raise TypeError('time must be int')
+            raise TypeError('time must be float')
 
         self._connection_started = time
 
-    last_connected = 0.0  # TODO Do we need a null interface for this?
-    announced = False
+    @property
+    def connection_announced(self):
+        """ True if the connection has been confirmed, and the status has been
+        announced.
+
+        Also resets self.disconnection_confirmation when True. """
+
+        return self._connection_announced
+
+    @connection_announced.setter
+    def connection_announced(self, boolean):
+        if boolean and self.disconnection_announced:
+            self.disconnection_announced = False
+
+        self._connection_announced = boolean
+
+    @property
+    def disconnection_announced(self):
+        """ True if the disconnection has been confirmed, and the status has
+        been announced.
+
+        Also resets self.connection_announced when True. """
+
+        return self._disconnection_announced
+
+    @disconnection_announced.setter
+    def disconnection_announced(self, boolean):
+        if self._disconnection_announced:
+            self._disconnection_announced = False
+
+        self._disconnection_announced = boolean
 
     def __init__(self, name, ident):
         if type(name) is not str:
@@ -81,6 +139,10 @@ class Person:
         self._connection_started = 0.0
 
         self._is_connected = False
+
+        self._connection_announced = False
+
+        self._disconnection_announced = False
 
     def __iter__(self):
         for attr in dir(self):

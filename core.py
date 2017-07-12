@@ -79,7 +79,6 @@ class UserChecker:
     def announce(self, person):
         """ Calls self.func (the callback function), passing it a data.Person
         object. """
-
         self.func(person)
 
     def check_for_people(self, db, quiet):
@@ -106,7 +105,7 @@ class UserChecker:
 
                     if not person.is_connected:
 
-                        if not quiet and person.connection_started == 0.0:
+                        if not quiet:
                             logger.info('%s connected to the WiFi!'
                                         % person.name)
 
@@ -130,10 +129,13 @@ class UserChecker:
                                          time.time() -
                                          person.connection_started,
                                          CONNECTION_CONFIRM)
+
                             if time.time() - person.connection_started > \
-                                    CONNECTION_CONFIRM and not person.announced:
-                                self.announce(person)  # TODO needs to track
-                                person.announced = True
+                                    CONNECTION_CONFIRM and not \
+                                    person.connection_announced:
+
+                                person.connection_announced = True
+                                self.announce(person)
 
                         logger.debug('%s: %s %s %s'
                                      % (person.name, str(person.is_connected),
@@ -149,7 +151,9 @@ class UserChecker:
                     logger.debug('%s previously connected: %s'
                                  % (person.name, person.is_connected))
 
-                    if not quiet:
+                    if not quiet and person.is_connected:
+                        # Only output data to the stream if they were previously
+                        # connected
                         logger.info('%s disconnected from the WiFi!'
                                     % person.name)
 
@@ -163,9 +167,10 @@ class UserChecker:
                                      time.time() - person.last_connected,
                                      DISCONNECTION_CONFIRM)
                         if time.time() - person.last_connected > \
-                                DISCONNECTION_CONFIRM and not person.announced:
-                            self.announce(person)  # TODO needs track announced
-                            person.announced = True
+                                DISCONNECTION_CONFIRM and not \
+                                person.disconnection_announced:
+                            person.disconnection_announced = True
+                            self.announce(person)
                             person.connection_started = 0.0
 
                     yield person
