@@ -3,9 +3,14 @@ import sys
 import time
 import os
 
-import core
-from .core import ERR_FILE, OUT_FILE
-from .log import logger
+try:
+    from . import core
+    from .core import ERR_FILE, OUT_FILE
+    from .log import logger
+except SystemError:
+    import core
+    from core import ERR_FILE, OUT_FILE
+    from log import logger
 
 l = core.Loader()
 
