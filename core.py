@@ -200,6 +200,9 @@ def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24'):
 
     Outputs all results to output_file. """
 
+    with open(output_file.name) as outfile:
+        outfile.truncate(0)
+
     return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
                             stderr=ERR_FILE)
 
