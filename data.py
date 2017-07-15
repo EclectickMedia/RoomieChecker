@@ -121,7 +121,7 @@ class Person:
     @disconnection_announced.setter
     def disconnection_announced(self, boolean):
         if self.connection_announced:
-            self._disconnection_announced = False
+            self.connection_announced = False
 
         self._disconnection_announced = boolean
 
