@@ -187,7 +187,8 @@ def reset(db):
         person.is_connected = False
         person.last_connected = 0.0
         person.connection_started = 0.0
-        person.announced = False
+        person.connection_announced = False
+        person.disconnection_announced = False
     Loader().dump(db)
 
     ERR_FILE.truncate(0)
