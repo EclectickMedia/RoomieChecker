@@ -104,7 +104,7 @@ class Person:
 
     @connection_announced.setter
     def connection_announced(self, boolean):
-        if boolean and self.disconnection_announced:
+        if boolean:
             self.disconnection_announced = False
 
         self._connection_announced = boolean
@@ -120,7 +120,7 @@ class Person:
 
     @disconnection_announced.setter
     def disconnection_announced(self, boolean):
-        if self._disconnection_announced:
+        if self.connection_announced:
             self._disconnection_announced = False
 
         self._disconnection_announced = boolean
