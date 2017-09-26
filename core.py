@@ -210,7 +210,7 @@ def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24',
         return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
                                 stderr=ERR_FILE)
     elif access(script_path, F_OK):
-        return subprocess.Popen('./macid_getter.sh', stdout=output_file,
+        return subprocess.Popen(script_path, stdout=output_file,
                                 stderr=ERR_FILE)
 
 
