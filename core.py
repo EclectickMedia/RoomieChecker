@@ -3,6 +3,7 @@ import pickle
 import subprocess
 import time
 from tempfile import NamedTemporaryFile
+from os import access, F_OK
 
 try:
     from .log import logger
@@ -195,16 +196,22 @@ def reset(db):
     OUT_FILE.truncate(0)
 
 
-def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24'):
+def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24',
+                  script_path=None):
     """ Returns a subprocess.Popen object running an NMAP request.
+    Optionally, the user can supply a script path for custom results.
 
     Outputs all results to output_file. """
 
     with open(output_file.name, 'w') as outfile:
         outfile.truncate(0)
 
-    return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
-                            stderr=ERR_FILE)
+    if script_path is None:
+        return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
+                                stderr=ERR_FILE)
+    elif access(script_path, F_OK):
+        return subprocess.Popen('./macid_getter.sh', stdout=output_file,
+                                stderr=ERR_FILE)
 
 
 if __name__ == '__main__':
