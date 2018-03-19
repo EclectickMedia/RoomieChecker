@@ -32,7 +32,7 @@ The script has an easy to use installation script already provided at `install.s
 
 To run copy and paste the following line into your terminal emulator:
 
-`curl https://raw.githubusercontent.com/EclectickMedia/UserChecker/install.sh | bash`
+`curl https://raw.githubusercontent.com/EclectickMedia/UserChecker/master/install.sh | bash`
 
 # Manual Installation
 
