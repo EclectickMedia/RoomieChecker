@@ -1,9 +1,44 @@
 #! /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
+""" Copyright Ariana Giroux, 2018 under the MIT license.
+
+Uses NMAP to check the network for specified identifiers. Implements a callback
+interface to notify user when the connection can be considered "confirmed."
+
+*NOTE* Due to the how mobile devices use wireless networks, we must ensure that
+we "confirm" that an identifier has an active session on the network. This is
+handled by ensuring that a user has been on the network for a particular amount
+of time (20 minutes by default).
+
+*NOTE* To look at the logic behind the "confirmation" policies, check
+`./UserChecker - Confirmation Policies.pdf`.
+
+Requires a working install of NMAP present in user's path.
+
+Usage:
+
+First, generate a database object:
+    `$ python3 register.py "Ariana Giroux" "Arianas-IDENTIFIER"`
+For more information on generating database objects:
+    `$ python3 register.py -h`
+
+Then, to run the UserChecker interface do the following:
+    >>> from core import Loader
+    >>> from core import generate_nmap
+    >>> from core import UserChecker
+    >>> db = Loader().load()
+    >>> generate_nmap().wait()  # Run NMAP scan
+    >>> # Parse nmap output enforcing connection confirmation polices, call callback on confirm
+    >>> u = UserChecker(Loader().load(), lambda x: print('callback'))
+    >>> for person in u:
+    ... print(person.name)
+    Ariana
+    callback
+"""
 import pickle
 import subprocess
 import time
 from tempfile import NamedTemporaryFile
-from os import access, F_OK
+import os
 
 try:
     from .log import logger
@@ -21,12 +56,7 @@ DB_PATH = 'db.pkl'
 class Loader:
     """ The standard interface for loading db.pkl. """
     def load(self, path='db.pkl'):
-        """ Loads a dict object containing the following fields:
-
-            name - The name of the maker
-            ident - The unique network identifier.
-            is_connected - True if user is on the wifi, false otherwise.
-        """
+        """ Returns a data.Database object via `pickle.load(path)`. """
         with open(path, 'rb') as f:
             return pickle.load(f)
 
@@ -37,24 +67,14 @@ class Loader:
 
 
 class UserChecker:
-    """ Handles user connectivity searching.
-
-    Checks output_file for person.iter occurances from people that have been
-    loaded from the database.
-
-    Presents an iter interface to allow for easily running the for loop. Each
-    iteration of __iter__ yields the person object that was used.
-
-    Also presents a callback feature to allow for easy data collection, without
-    requiring the calling method to track connection policies themselves. """
-
+    """ Implements output search functionality, enforcing connection polices. """
     def __init__(self, db, func, quiet=False, output_file=OUT_FILE):
-        """ Stores data that must be persistent.
+        """ Initializes variables that must be accessible.
 
-        db = A database object loaded by Loader.load.
-        func = The callback function.
-        quiet = Verbosity flag.
-        output_file = The file to check for user connectivity.
+        `db` = A database object loaded by Loader.load.
+        `func` = The callback function.
+        `quiet` = Verbosity flag.
+        `output_file` = The file to check for user connectivity.
         """
 
         self.func = func
@@ -63,9 +83,7 @@ class UserChecker:
         self.output_file = OUT_FILE
 
     def grep_output(self, term, output_file=OUT_FILE, quiet=False):
-        """ Parses a file for the appearance of term. This signifies that NMAP
-        found the user in its scan, and we can infer they have connected to the
-        network. """
+        """ Parses `output_file` for the appearance of term. Returns `True` if found. """
 
         for line in output_file:
             logger.debug(str(line).strip('\n'))
@@ -78,19 +96,12 @@ class UserChecker:
             return False
 
     def announce(self, person):
-        """ Calls self.func (the callback function), passing it a data.Person
+        """ Calls `self.func` (the callback function), passing it a `data.Person`
         object. """
         self.func(person)
 
     def check_for_people(self, db, quiet):
-        """ Checks OUT_FILE for the presence of each data.Person object's
-        identifier field to identify if they are connected to the network, then
-        yields each person.
-
-        It requires a database object provided by Loader.load, and a quiet flag
-        (for signalling verbosity).
-        """
-
+        """ For each person in `db`, update the person's fields based on connection policies. """
         for person in db.yield_people():
             logger.debug('check %s' % person.name)
             logger.debug(str(list(person)))
@@ -177,13 +188,18 @@ class UserChecker:
                     yield person
 
     def __iter__(self):
+        """ Provides an easy interface to run the search. Yields each person from
+        `self.check_for_people`. """
         for person in self.check_for_people(self.db, self.quiet):
             yield person
 
 
 def reset(db):
-    """ Resets data fields all users in the database. """
-    db = Loader().load()
+    """ Resets all data fields in `db`. Assumes `db` is `data.Database.version == 1`.
+
+    Also resets `global OUT_FILE` and `global OUT_FILE`
+    """
+    db = Loader().load()  # DEBUG Why is this here? Overrides `db` arg
     for person in db.yield_people():
         person.is_connected = False
         person.last_connected = 0.0
@@ -198,10 +214,20 @@ def reset(db):
 
 def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24',
                   script_path=None):
-    """ Returns a subprocess.Popen object running an NMAP request.
-    Optionally, the user can supply a script path for custom results.
+    """ Returns a subprocess.Popen object running an NMAP request. Optionally,
+    the user can supply a script path for custom results. Outputs all results
+    to `output_file.`
 
-    Outputs all results to output_file. """
+    `output_file` - The file to write `subprocess.Popen` output to.
+        Defaults to `global OUT_FILE`
+    `ip_range` - The IP range to scan. Defaults to `192.168.1.0/24`.
+        If `script_path` is specified, this kwarg does not get used.
+    `script_path` - The path to a user specified script.
+        The script must output any useful information to STDOUT. The script must
+        also be able to be executed by this scripts UID.
+
+    `returns` - A `subprocess.Popen` object.
+    """
 
     with open(output_file.name, 'w') as outfile:
         outfile.truncate(0)
@@ -209,7 +235,7 @@ def generate_nmap(output_file=OUT_FILE, ip_range='192.168.1.0/24',
     if script_path is None:
         return subprocess.Popen(['nmap', '-sP', ip_range], stdout=output_file,
                                 stderr=ERR_FILE)
-    elif access(script_path, F_OK):
+    elif os.access(script_path, os.F_OK):
         return subprocess.Popen(script_path, stdout=output_file,
                                 stderr=ERR_FILE)
 

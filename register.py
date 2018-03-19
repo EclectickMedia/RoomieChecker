@@ -1,3 +1,5 @@
+""" Provides ease of use pickling and user registration to a db file. Mostly useful
+from the command line. """
 import argparse
 import os
 
@@ -14,6 +16,7 @@ l = core.Loader()
 
 
 def register_user(db, name, ident):
+    """ Adds a new `data.Person` object to `db`. """
     if db is not None:
         logger.info('Registering user')
         db.add_person(data.Person(name, ident))

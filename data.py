@@ -1,3 +1,4 @@
+""" Implements data model functionality. """
 import time
 try:
     from .log import logger
@@ -12,8 +13,7 @@ class Database:
         self.people.append(person)
 
     def yield_people(self):
-        """ Yields each Person object in the internal people list one at a
-        time. """
+        """ Yields each Person object in the internal people list one at a time. """
         for person in self.people:
             yield person
 
@@ -33,7 +33,8 @@ class Database:
         return 1
 
     def __init__(self):
-        self.people = []  # the internal people list
+        """ Initializes the internal people list. """
+        self.people = []
 
 
 class Person:
@@ -59,7 +60,7 @@ class Person:
     def is_connected(self):
         """ True if the user is currently connected.
 
-        If set to false, and self.connection_started is equal to 0.0, sets
+        If set to True, and self.connection_started is equal to 0.0, sets
         self.connection_stated to time.time(). """
 
         return self._is_connected
@@ -126,6 +127,7 @@ class Person:
         self._disconnection_announced = boolean
 
     def __init__(self, name, ident):
+        """ Initializes data. """
         if type(name) is not str:
             raise TypeError('name must be str')
 
@@ -145,6 +147,7 @@ class Person:
         self._disconnection_announced = False
 
     def __iter__(self):
+        """ Yields a 2tuple containing `field name: data` pairs. """
         for attr in dir(self):
             if not attr[0:1].count('_'):
                 yield (attr, getattr(self, attr))

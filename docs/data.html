@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>data</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/arianagiroux/Documents/UserChecker/data.py">/Users/arianagiroux/Documents/UserChecker/data.py</a></font></td></tr></table>
+    <p><tt>Implements&nbsp;data&nbsp;model&nbsp;functionality.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="data.html#Database">Database</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data.html#Person">Person</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Database">class <strong>Database</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Defines&nbsp;the&nbsp;behaviour&nbsp;of&nbsp;the&nbsp;database.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Database-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;internal&nbsp;people&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="Database-add_person"><strong>add_person</strong></a>(self, person)</dt><dd><tt>Adds&nbsp;a&nbsp;<a href="#Person">Person</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;the&nbsp;internal&nbsp;people&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="Database-remove_person"><strong>remove_person</strong></a>(self, name)</dt><dd><tt>Checks&nbsp;each&nbsp;person&nbsp;in&nbsp;the&nbsp;internal&nbsp;people&nbsp;list&nbsp;for&nbsp;name&nbsp;and&nbsp;if<br>
+that&nbsp;person's&nbsp;name&nbsp;matches&nbsp;the&nbsp;name&nbsp;argument,&nbsp;remove&nbsp;it&nbsp;from&nbsp;the<br>
+internal&nbsp;people&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="Database-version"><strong>version</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Database-yield_people"><strong>yield_people</strong></a>(self)</dt><dd><tt>Yields&nbsp;each&nbsp;<a href="#Person">Person</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;in&nbsp;the&nbsp;internal&nbsp;people&nbsp;list&nbsp;one&nbsp;at&nbsp;a&nbsp;time.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Person">class <strong>Person</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Handles&nbsp;all&nbsp;data&nbsp;for&nbsp;each&nbsp;<a href="#Person">Person</a>&nbsp;in&nbsp;the&nbsp;database.&nbsp;Provides&nbsp;an&nbsp;easy<br>
+iterable&nbsp;interface&nbsp;to&nbsp;retrieve&nbsp;all&nbsp;data&nbsp;fields.<br>
+&nbsp;<br>
+For&nbsp;example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;from&nbsp;data&nbsp;import&nbsp;<a href="#Person">Person</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;p&nbsp;=&nbsp;<a href="#Person">Person</a>('Ariana',&nbsp;'Arianas-Device')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;for&nbsp;field&nbsp;in&nbsp;p:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(field)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('connection_announced',&nbsp;False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('connection_started',&nbsp;0.0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('disconnection_announced',&nbsp;False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('ident',&nbsp;'Arianas-Device')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('is_connected',&nbsp;False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('last_connected',&nbsp;0.0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;('name',&nbsp;'Ariana')<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Person-__init__"><strong>__init__</strong></a>(self, name, ident)</dt><dd><tt>Initializes&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="Person-__iter__"><strong>__iter__</strong></a>(self)</dt><dd><tt>Yields&nbsp;a&nbsp;2tuple&nbsp;containing&nbsp;`field&nbsp;name:&nbsp;data`&nbsp;pairs.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>connection_announced</strong></dt>
+<dd><tt>True&nbsp;if&nbsp;the&nbsp;connection&nbsp;has&nbsp;been&nbsp;confirmed,&nbsp;and&nbsp;the&nbsp;status&nbsp;has&nbsp;been<br>
+announced.<br>
+&nbsp;<br>
+Also&nbsp;resets&nbsp;self.<strong>disconnection_confirmation</strong>&nbsp;when&nbsp;True.</tt></dd>
+</dl>
+<dl><dt><strong>connection_started</strong></dt>
+<dd><tt>The&nbsp;time&nbsp;at&nbsp;which&nbsp;the&nbsp;user&nbsp;connected.&nbsp;A&nbsp;value&nbsp;of&nbsp;0.0&nbsp;can&nbsp;be<br>
+considered&nbsp;"never".<br>
+&nbsp;<br>
+Can&nbsp;be&nbsp;set&nbsp;to&nbsp;0.0&nbsp;when&nbsp;the&nbsp;user&nbsp;has&nbsp;been&nbsp;confirmed&nbsp;to&nbsp;have&nbsp;disconnected.</tt></dd>
+</dl>
+<dl><dt><strong>disconnection_announced</strong></dt>
+<dd><tt>True&nbsp;if&nbsp;the&nbsp;disconnection&nbsp;has&nbsp;been&nbsp;confirmed,&nbsp;and&nbsp;the&nbsp;status&nbsp;has<br>
+been&nbsp;announced.<br>
+&nbsp;<br>
+Also&nbsp;resets&nbsp;self.<strong>connection_announced</strong>&nbsp;when&nbsp;True.</tt></dd>
+</dl>
+<dl><dt><strong>is_connected</strong></dt>
+<dd><tt>True&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;currently&nbsp;connected.<br>
+&nbsp;<br>
+If&nbsp;set&nbsp;to&nbsp;True,&nbsp;and&nbsp;self.<strong>connection_started</strong>&nbsp;is&nbsp;equal&nbsp;to&nbsp;0.0,&nbsp;sets<br>
+self.<strong>connection_stated</strong>&nbsp;to&nbsp;time.time().</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>last_connected</strong> = 0.0</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>logger</strong> = &lt;logging.Logger object&gt;</td></tr></table>
+</body></html>

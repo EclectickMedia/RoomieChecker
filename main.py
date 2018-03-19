@@ -1,3 +1,20 @@
+""" Implements an `argparse.ArgumentParser` based interface for the package.
+Does not provide any useful code access points.
+Parser Usage:
+usage: main.py [-h] [-d DELAY] [-q] [-r IPRANGE] [-R]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DELAY, --delay DELAY
+                        The amount of time (in seconds) to delay between each
+                        NMAP scan. Defaults to 0 (instant)
+  -q, --quiet           Do not output to STDOUT
+  -r IPRANGE, --iprange IPRANGE
+                        The IP range to attempt to scan. Defaults to
+                        '192.168.1.0/24'
+  -R, --reset           Reset the on line status of the users in the database
+"""
+
 import argparse
 import sys
 import time
