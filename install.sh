@@ -1,4 +1,5 @@
 #! /bin/bash
+git clone https://github.com/EclectickMedia/UserChecker.git
 nmap &> /dev/null
 if [ $? != 255 ]; then
 	echo "Installing NMAP, requires sudo"
