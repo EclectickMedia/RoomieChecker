@@ -2,6 +2,8 @@ import pickle
 from os.path import expanduser, join
 from os import mkdir, access, F_OK
 
+__version__ == '0.2'
+
 RC_PATH = expanduser('~/.UserCheckerRC')
 DB_PATH = join(RC_PATH, 'db.pkl')
 
