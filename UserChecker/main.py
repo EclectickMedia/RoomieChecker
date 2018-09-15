@@ -20,16 +20,12 @@ import sys
 import time
 import os
 
-try:
-    from . import core
-    from .core import ERR_FILE, OUT_FILE
-    from .log import logger
-except SystemError:
-    import core
-    from core import ERR_FILE, OUT_FILE
-    from log import logger
+from . import Loader
+from .core import ERR_FILE, OUT_FILE, reset, generate_nmap, UserChecker
+from .log import logger
 
-l = core.Loader()
+
+l = Loader()
 
 
 parser = argparse.ArgumentParser()
@@ -47,45 +43,53 @@ parser.add_argument('-r', '--iprange', help='The IP range to attempt to '
 parser.add_argument('-R', '--reset', help='Reset the on line status of the'
                     ' users in the database', action='store_true')
 
-parsed = parser.parse_args()
 
-if parsed.reset:
-    core.reset(l.load())
-    exit()
+def run():
+    parsed = parser.parse_args()
 
-start_time = time.time()
-logger.debug("runtime start")
-while 1:
-    # Clear OUT_FILE
-    OUT_FILE.truncate(0)
+    if parsed.reset:
+        reset(l.load())
+        exit()
 
-    if not parsed.quiet:
-        logger.info('Refreshing DB')
+    start_time = time.time()
+    logger.debug("runtime start")
+    while 1:
+        # Clear OUT_FILE
+        OUT_FILE.truncate(0)
 
-    # Load a db
-    db = l.load()
-    logger.debug('Loaded DB: %s' % str(db))
-    if not parsed.quiet:
-        logger.info('Running NMAP to find connected devices.')
+        if not parsed.quiet:
+            logger.info('Refreshing DB')
 
-    # Generate an NMAP object, and wait for it to finish its scan
-    logger.debug('Generate NMAP scan, wait')
-    core.generate_nmap(OUT_FILE, parsed.iprange).wait()
+        # Load a db
+        db = l.load()
+        logger.debug('Loaded DB: %s' % str(db))
+        if not parsed.quiet:
+            logger.info('Running NMAP to find connected devices.')
 
-    def callback(person):
-        print('got %s' % person.name)
+        # Generate an NMAP object, and wait for it to finish its scan
+        logger.debug('Generate NMAP scan, wait')
+        generate_nmap(OUT_FILE, parsed.iprange).wait()
 
-    for person in core.UserChecker(db, callback, quiet=parsed.quiet):
-        pass
+        def callback(person):
+            print('got %s' % person.name)
 
-    if (time.time() - start_time) > 1200:  # TODO what is this doing here?
-        ERR_FILE.truncate(0)
-        start_time = time.time()
+        for person in UserChecker(db, callback, quiet=parsed.quiet):
+            pass
 
-    l.dump(db)  # Dump db back to disk
+        if (time.time() - start_time) > 1200:  # TODO what is this doing here?
+            ERR_FILE.truncate(0)
+            start_time = time.time()
 
-    if time.time() - start_time > 120 and not sys.argv.count('-q'):
-        os.system('cls' if os.name == 'nt' else 'clear')
-        start_time = time.time()
+        l.dump(db)  # Dump db back to disk
 
-    time.sleep(parsed.delay)
+        if time.time() - start_time > 120 and not sys.argv.count('-q'):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            start_time = time.time()
+
+        time.sleep(parsed.delay)
+
+
+if __name__ == '__main__':
+    run()
+
+    raise DeprecationWarning('Direct execution of main.py will soon be deprecated.')

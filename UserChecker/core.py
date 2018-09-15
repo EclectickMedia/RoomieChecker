@@ -1,5 +1,7 @@
 #! /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
-""" Copyright Ariana Giroux, 2018 under the MIT license.
+""" Provides a method to check if a user is for sure connected (and using) a network.
+
+Copyright Ariana Giroux, 2018 under the MIT license.
 
 Uses NMAP to check the network for specified identifiers. Implements a callback
 interface to notify user when the connection can be considered "confirmed."
@@ -34,36 +36,19 @@ Then, to run the UserChecker interface do the following:
     Ariana
     callback
 """
-import pickle
 import subprocess
 import time
 from tempfile import NamedTemporaryFile
 import os
 
-try:
-    from .log import logger
-except SystemError:
-    from log import logger
+from . import Loader, DB_PATH
+from .log import logger
 
 # CONSTANTS
 CONNECTION_CONFIRM = 1200  # 20 minutes in seconds
 DISCONNECTION_CONFIRM = 3600  # 1 hour in seconds
 ERR_FILE = NamedTemporaryFile('a+')
 OUT_FILE = NamedTemporaryFile('a+')
-DB_PATH = 'db.pkl'
-
-
-class Loader:
-    """ The standard interface for loading db.pkl. """
-    def load(self, path='db.pkl'):
-        """ Returns a data.Database object via `pickle.load(path)`. """
-        with open(path, 'rb') as f:
-            return pickle.load(f)
-
-    def dump(self, db, path='db.pkl'):
-        """ Dumps db to path via Pickle. """
-        with open(path, 'wb+') as f:
-            pickle.dump(db, f)
 
 
 class UserChecker:

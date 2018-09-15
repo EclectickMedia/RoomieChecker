@@ -36,6 +36,9 @@ class Database:
         """ Initializes the internal people list. """
         self.people = []
 
+    def __len__(self):
+        return len(self.people)
+
 
 class Person:
     """ Handles all data for each Person in the database. Provides an easy

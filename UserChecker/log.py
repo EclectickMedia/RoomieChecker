@@ -1,11 +1,11 @@
 import logging
 import logging.handlers as handlers
 
-import sys  # for grabbing the program directory
 import os  # for splitting sys.argv
-PROGRAM_PATH = os.path.split(sys.argv[0])[0]
-DEBUG_LOG_PATH = os.path.join(PROGRAM_PATH, 'logs', 'debug.log')
-TESTS_LOG_PATH = os.path.join(PROGRAM_PATH, 'logs', 'tests.log')
+
+from . import RC_PATH
+DEBUG_LOG_PATH = os.path.join(RC_PATH, 'debug.log')
+TESTS_LOG_PATH = os.path.join(RC_PATH, 'tests.log')
 
 # BEGIN Logger setup
 file_formatter = logging.Formatter(
