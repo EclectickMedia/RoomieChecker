@@ -100,21 +100,18 @@ def run():
         logger.debug('Generate NMAP scan, wait')
         generate_nmap(OUT_FILE, parsed.iprange).wait()
 
-        def callback(person):
-            print('got %s' % person.name)
-
         for person in UserChecker(db, callback, quiet=parsed.quiet):
             pass
 
-        if (time.time() - start_time) > 1200:  # TODO what is this doing here?
-            ERR_FILE.truncate(0)
-            start_time = time.time()
+        if (time.time() - start_time) > 1200:  # DEBUG what is this doing here?
+            ERR_FILE.truncate(0)  # DEBUG.
+            start_time = time.time()  # DEBUG.
 
         l.dump(db)  # Dump db back to disk
 
-        if time.time() - start_time > 120 and not sys.argv.count('-q'):
-            os.system('cls' if os.name == 'nt' else 'clear')
-            start_time = time.time()
+        if time.time() - start_time > 120 and not sys.argv.count('-q'):  # DEBUG What is this doing here?
+            os.system('cls' if os.name == 'nt' else 'clear')  # DEBUG.
+            start_time = time.time()  # DEBUG.
 
         time.sleep(parsed.delay)
 

@@ -6,6 +6,7 @@ __version__ = '0.2'
 
 RC_PATH = expanduser('~/.UserCheckerRC')
 DB_PATH = join(RC_PATH, 'db.pkl')
+CB_PATH = join(RC_PATH, 'callback')
 
 
 if not access(RC_PATH, F_OK):
