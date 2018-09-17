@@ -1,9 +1,7 @@
 """ Implements data model functionality. """
 import time
-try:
-    from .log import logger
-except SystemError:
-    from log import logger
+
+from .log import logger
 
 
 class Database:
