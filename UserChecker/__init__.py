@@ -48,8 +48,12 @@ def register_user(db_path, name, ident):
     Loader().dump(db, DB_PATH)
 
 
-if not access(DB_PATH, F_OK):
-    Loader().dump(Database())
+def validate_db():
+    if not access(DB_PATH, F_OK):
+        Loader().dump(Database())
+        assert access(DB_PATH, F_OK), 'DB_FILE not made during validate'
 
-if not len(Loader().load()) > 0:
-    raise RuntimeError('Cannot possible run without a user in the database. Run "UserChecker-register"...')
+    if type(Loader().load()) is not Database or not len(Loader().load()) >= 1:
+        return False
+    else:
+        return True

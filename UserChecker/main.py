@@ -20,10 +20,10 @@ import sys
 import time
 import os
 
-from . import Loader
+from . import Loader, validate_db, DB_PATH, CB_PATH, register_user
 from .core import ERR_FILE, OUT_FILE, reset, generate_nmap, UserChecker
 from .log import logger
-
+from .data import Database
 
 l = Loader()
 
@@ -43,13 +43,43 @@ parser.add_argument('-r', '--iprange', help='The IP range to attempt to '
 parser.add_argument('-R', '--reset', help='Reset the on line status of the'
                     ' users in the database', action='store_true')
 
+subparsers = parser.add_subparsers(dest='parser')
+
+register_parser = subparsers.add_parser('register', description='Adds a user to '
+                                        'the database.')
+
+register_parser.add_argument('name', help='The name of the user')
+register_parser.add_argument('ident', help='The maker\'s network identifier')
+
+
+def callback(*args):
+    if os.access(CB_PATH, os.F_OK):
+        os.system(CB_PATH)
+
 
 def run():
     parsed = parser.parse_args()
 
+    # VALIDATE ARGUMENTS
+
+    if parsed.parser == 'register':
+        validate_db()
+        if os.access(DB_PATH, os.F_OK):
+            register_user(l.load(), parsed.name, parsed.ident)
+        else:
+            register_user(Database(), parsed.name, parsed.ident)
+
+        exit()
+
+    if not validate_db():
+        raise RuntimeError("Can't possibly run without at least one user in the "
+                           "database, run 'UserChecker-register'...")
+
     if parsed.reset:
         reset(l.load())
         exit()
+
+    # MAIN LOGIC
 
     start_time = time.time()
     logger.debug("runtime start")

@@ -20,8 +20,7 @@ setup(
     tests_require=["pytest"],
     zip_safe=True,
     entry_points={
-        'console_scripts': ['UserChecker=UserChecker.main:run',
-                            'UserChecker-register=UserChecker.register:_run'],
+        'console_scripts': ['UserChecker=UserChecker.main:run']
     },
     classifiers=(
                 "Programming Language :: Python :: 3",
